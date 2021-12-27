@@ -7,3 +7,17 @@ def get_account():
 
     else:
         return accounts.add(config["wallets"]["from_key"])
+
+    # Using default Ganache Account
+    # account = accounts[0]
+
+    # For Real Acct
+    # Using Brownie Accounts
+    # Pre Requirement. Terminal brownie accounts new account-name
+    # account = accounts.load("dubRinkby-account")
+
+    # for test Acct
+    # env variable
+    # account = accounts.add(config["wallets"]["from_key"])
+
+    # print(account)

@@ -1,20 +1,34 @@
-from brownie import accounts, config, MyStorage, network
+from brownie import accounts, config, MyStorage, network, FundMe, MockV3Aggregator
+from scripts.all_day import get_account
+
+
+def deploy_fund_me():
+    account = get_account()
+
+    if network.show_active != "developement":
+        price_feed_address = config["networks"][network.show_active()][
+            "eth_usd_price_feed"
+        ]
+
+    else:
+        # BUG HERE
+        print(f"The active network is {network.show_active()}")
+        print("Deploying Mocks. . .")
+        mock_aggregator = MockV3Aggregator.deploy(
+            18, 2000000000000000000000, {"from": account}
+        )
+        price_feed_address = mock_aggregator.address
+        print("Mock Deployed")
+
+    fund_me = FundMe.deploy(
+        price_feed_address,
+        {"from": account},
+        publish_source=True,
+    )
+    print(f"Contract deployed to {fund_me.address}")
 
 
 def deploy_my_storage():
-    # Using default Ganache Account
-    # account = accounts[0]
-
-    # For Real Acct
-    # Using Brownie Accounts
-    # Pre Requirement. Terminal brownie accounts new account-name
-    # account = accounts.load("dubRinkby-account")
-
-    # for test Acct
-    # env variable
-    # account = accounts.add(config["wallets"]["from_key"])
-
-    # print(account)
 
     account = get_account()
 
@@ -38,4 +52,5 @@ def get_account():
 
 
 def main():
-    deploy_my_storage()
+    # deploy_my_storage()
+    deploy_fund_me()
